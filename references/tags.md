@@ -141,10 +141,11 @@ language-switcher rule in [i18n-and-routing.md](i18n-and-routing.md).
 
 ## Thin tag pages
 
-The earlier implementation generated a tag page for every distinct tag: **46
-tags across 23 English posts**, so a large share of them had a single post. Each
-is an indexable page whose content is one card, exactly what thin-content
-heuristics penalize, and 138 near-empty URLs in the sitemap across three locales.
+The earlier implementation generated a tag page for every distinct tag: **about
+two tags per post**, so a large share of them had a single post. Each is an
+indexable page whose content is one card, exactly what thin-content heuristics
+penalize, and every one of them is a near-empty URL in the sitemap, once per
+locale.
 
 The module ships the threshold, defaulted off, because the right value is an
 editorial decision:

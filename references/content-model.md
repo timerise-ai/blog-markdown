@@ -96,9 +96,9 @@ Resolution, in order:
    `translationKey`. Drop anything with no translation.
 
 Step 2 is the fix that matters. In the earlier implementation it was absent, so
-a translator who did not copy the `related` block got no related section: **17 of
-23 Polish posts and 17 of 23 German posts shipped with an empty "Further
-reading"** while all 23 English posts had one. Nothing errored; the section simply did not render.
+a translator who did not copy the `related` block got no related section: **most
+translated posts shipped with an empty "Further reading"** while every
+default-locale post had one. Nothing errored; the section simply did not render.
 
 Two smaller guards belong in the same resolver: **exclude the current post**
 (a post listing itself renders itself) and **de-duplicate by `translationKey`**
@@ -152,8 +152,8 @@ function normalize(value: unknown): unknown {
 ```
 
 Sorting is then `b.date.localeCompare(a.date)`, which is correct for ISO strings
-of either length and does not construct 69 `Date` objects per sort. Posts with an
-empty date sort last, which is the behaviour you want for a malformed file.
+of either length and does not construct a `Date` object per post per sort. Posts
+with an empty date sort last, which is the behaviour you want for a malformed file.
 
 ## Adding a locale
 

@@ -14,7 +14,7 @@ repository. The `node --experimental-strip-types --test` invocation in `referenc
 generated app, against fixtures the agent creates there.
 
 The skill was written by the engineer who has shipped this module; the earlier implementation it was audited
-against ran 3 locales x 23 posts, ~46 tags, 69 static pages.
+against was a multi-locale, statically generated marketing blog.
 `references/provenance.md` records the twelve defects found in it, what was kept deliberately, what was added
 and what was left behind. That file is the rationale layer — read it before "simplifying" anything.
 
@@ -50,9 +50,10 @@ and what was left behind. That file is the rationale layer — read it before "s
   loader memoization, the explicit draft filter, `timeZone: "UTC"` in date formatting, and the language
   switcher returning the blog index on a tag URL: each is a measured defect from the earlier implementation
   or a documented judgement call. Check `provenance.md` before touching one.
-- **Measured numbers are load-bearing.** 4,899 reads for 69 pages, 17 of 23 translated posts without related
-  posts, 20 tests, twelve defects, seven fixtures. They were verified against the earlier implementation; do
-  not restate them loosely and do not add new ones that were not measured.
+- **The numbers that remain are load-bearing.** The 71x read amplification, 20 tests, twelve defects, seven
+  fixtures. They were verified against the earlier implementation or this repository; do not restate them
+  loosely and do not add new ones. Corpus figures of the earlier implementation (how many posts, tags,
+  pages, locales) do not appear anywhere: describe the shape of a finding instead.
 - **Mark additions as additions.** Anything designed in the skill and never run in the earlier implementation
   belongs in the "Added" section of `provenance.md`, stated as such. The skill's credibility is that it
   distinguishes the two.

@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.4] - 2026-09-02
+
+Wording release. Templates and technical content are unchanged from 0.1.3.
+
+### Changed
+- The corpus figures of the earlier implementation (posts, tags, pages, locales, file
+  reads and their ratios) are gone from `SKILL.md`, `README.md`, `CLAUDE.md` and
+  `references/`, replaced by the shape of each finding. The 71x read amplification and
+  the skill's own test, fixture and defect counts stay.
+
 ## [0.1.3] - 2026-09-02
 
 Wording release. The origin and audit statements across the skill follow section 2 of

@@ -206,7 +206,7 @@ that matters is stability, not the specific colours.
 
 Covers are inline SVG keyed by a frontmatter string. The registry is the pattern
 worth copying; the artwork is not: **ship your own motifs**, the earlier
-implementation's 29 are drawn for its brand.
+implementation's are drawn for its brand.
 
 ```tsx
 // components/blog/BlogCover.tsx

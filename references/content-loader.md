@@ -398,18 +398,15 @@ export function getRelatedPosts(post: Post, locale: Locale): Post[] {
 
 ## Why memoization is not optional
 
-Measured on the earlier implementation, 3 locales, 23 posts, 69 static pages:
-
-| Stage | File reads |
-|---|---|
-| `generateStaticParams` (3 x `getAllPosts`) | 69 |
-| `generateMetadata` per page (alternates re-read all 3 locales) | 4,830 |
-| **Total** | **4,899** — 71x amplification |
+Measured on the earlier implementation, the build read every content file about
+71 times. `generateStaticParams` accounts for one read per file per locale;
+`generateMetadata`, run once per page, accounts for the rest, because it
+re-reads every locale to resolve alternates.
 
 The cause is `getAlternateSlugs`, which calls `getAllPosts` once per locale and
-is called once per page. Uncached, that is quadratic in post count: doubling to
-46 posts per locale would be ~19,000 reads, each one a `readFileSync` plus a full
-`gray-matter` parse. The `Map` above makes it 69 reads flat.
+is called once per page. Uncached, that is quadratic in post count: doubling the
+posts roughly quadruples the reads, each one a `readFileSync` plus a full
+`gray-matter` parse. The `Map` above makes it one read per file, flat.
 
 Two things make the cache safe:
 

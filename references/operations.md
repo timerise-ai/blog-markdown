@@ -137,13 +137,11 @@ give feedback.
 ## Build cost
 
 The dominant cost is not markdown parsing, it is repeated loading. Measured on
-the earlier implementation before memoization:
-
-| Posts per locale | Locales | Pages | File reads |
-|---|---|---|---|
-| 23 | 3 | 69 | 4,899 |
-| 46 | 3 | 138 | ~19,000 (quadratic) |
-| 23 | 3 | 69 | **69** (memoized) |
+the earlier implementation before memoization, the build read every content
+file about 71 times: once per post per page per locale, because alternate-slug
+resolution re-reads every locale on every page. That is quadratic in post
+count, so doubling the posts roughly quadruples the reads. Memoized, the build
+reads each file once.
 
 If a build slows down as content grows, check for an uncached `getAllPosts` in a
 per-page function before anything else. `generateMetadata` is the usual site,

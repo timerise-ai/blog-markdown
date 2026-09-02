@@ -43,7 +43,7 @@ mkdir -p ~/.agents/skills
 ln -s ~/.claude/skills/blog-markdown ~/.agents/skills/blog-markdown
 ```
 
-Update the skill with `git pull` in its directory. The current release is **0.1.3**. See
+Update the skill with `git pull` in its directory. The current release is **0.1.4**. See
 [`CHANGELOG.md`](CHANGELOG.md). The [skills index](https://github.com/timerise-ai/skills) lists the other
 Timerise Skills and how to install them all at once.
 
@@ -86,8 +86,8 @@ These travel with the module and are never optional. Each one was live in the ea
    resolve through `translationKey`, or the section quietly does not render.
 3. **A tag's identity is its slug, not its label.** `"AI Agents"` and `"AI agents"` slug to the same URL;
    group and match by slug or one spelling variant's posts vanish from their own tag page.
-4. **Loading is O(posts x locales) per page unless you memoize.** Measured on the earlier implementation:
-   4,899 file reads to generate 69 pages, all from resolving alternates during `generateMetadata`.
+4. **Loading is O(posts x locales) per page unless you memoize.** Measured on the earlier implementation: a
+   71x file-read amplification at build time, all from resolving alternates during `generateMetadata`.
 
 Everything else is the host app's: styling, naming, renderer, i18n system, cover artwork.
 

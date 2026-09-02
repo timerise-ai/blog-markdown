@@ -26,8 +26,8 @@ and it is what powers hreflang, the language switcher, related posts, and
 cross-locale redirects. Get that one field right and everything else is lookups.
 
 Written by the engineer who has shipped this module. The earlier implementation
-it was audited against ran 3 locales x 23 posts, ~46 tags, statically generated,
-plus its sitemap and SEO surface.
+it was audited against was a multi-locale, statically generated marketing blog
+with its sitemap and SEO surface.
 
 ## When to use
 
@@ -69,8 +69,8 @@ content/blog/<locale>/<localized-slug>.md   # frontmatter + body
 1. **Relations are authored once, in the default locale, as default-locale
    slugs.** A translated file may omit `related` entirely and still get the right
    related posts, resolved through `translationKey`. In the earlier
-   implementation this fallback was missing and **17 of 23 translated posts silently showed no
-   related section**.
+   implementation this fallback was missing and **most translated posts silently
+   showed no related section**.
 2. **A tag's identity is its slug, not its label.** `"AI Agents"` and
    `"AI agents"` slug to the same URL. Group by slug and match posts by slug, or
    one spelling variant's posts vanish from its own tag page.
@@ -82,8 +82,8 @@ content/blog/<locale>/<localized-slug>.md   # frontmatter + body
    that threw returns `{}` — no error, no frontmatter. Always call
    `matter(contents, {})`; any options object opts out of the cache.
 5. **Loading is O(posts x locales) per page unless you memoize.** Measured on the
-   earlier implementation: 4,899 file reads to generate 69 pages, a 71x
-   amplification, all from resolving alternates during `generateMetadata`.
+   earlier implementation: a 71x file-read amplification at build time, all from
+   resolving alternates during `generateMetadata`.
 6. **`getPostSlugs` must filter `.md`.** A stray `.DS_Store` makes the loader
    read `.DS_Store.md`, throw `ENOENT`, and fail the entire build.
 7. **Tag pages have no cross-locale identity.** Tags are per-locale free text, so

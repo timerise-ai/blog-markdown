@@ -2,9 +2,9 @@
 
 Written by the engineer who has shipped this module. The earlier implementation
 it was audited against was the blog module of a Next.js 16 marketing site:
-3 locales, 23 posts per locale, ~46 tags, 69 statically generated pages, plus its
-sitemap and SEO surface. Roughly 15 source files, excluding 29 brand-specific SVG
-cover motifs which were deliberately left behind.
+multi-locale, statically generated, with its sitemap and SEO surface. A small
+content layer plus routes; its brand-specific SVG cover motifs were deliberately
+left behind.
 
 **Fidelity: hardened.** The templates are the earlier implementation with its
 defects fixed and its gaps filled. Every deviation is listed below. Nothing is
@@ -50,9 +50,9 @@ this, which is exactly why both are shipped — masking is not fixing.
 `getRelatedPosts` read the current file's own `related` array. Relations are
 authored as default-locale slugs, and translators generally did not copy the
 block, so the section simply did not render. Measured on the earlier
-implementation's content: **all 23 English posts had related posts; 17 of 23
-Polish and 17 of 23 German posts had none.** No error, no empty state: the
-section was conditional on `post.related?.length`, so it vanished.
+implementation's content: **every default-locale post had related posts; most
+translated posts had none.** No error, no empty state: the section was
+conditional on `post.related?.length`, so it vanished.
 
 **Shipped:** `getRelatedPosts` falls back to the default-locale sibling's
 `related` via `translationKey`.
@@ -62,11 +62,11 @@ section was conditional on `post.related?.length`, so it vanished.
 
 No memoization anywhere in the content layer. `getAlternateSlugs` calls
 `getAllPosts` once per locale and runs once per page in `generateMetadata`.
-Measured: **4,899 content-file reads to generate 69 pages**, each read followed
-by a full `gray-matter` parse. The cost is quadratic in post count.
+Measured: **every content file read about 71 times per build**, each read
+followed by a full `gray-matter` parse. The cost is quadratic in post count.
 
 **Shipped:** a per-locale `Map` cache, enabled in production only, bypassed in
-development so edits still hot-reload. 4,899 reads becomes 69.
+development so edits still hot-reload. Each file is read once.
 [content-loader.md](content-loader.md)
 
 ### 4. A stray dotfile fails the entire build
@@ -85,9 +85,9 @@ against a file the author never created.
 then posts were filtered by that exact label. Two spellings of one tag
 (`"AI Agents"` / `"AI agents"`) slug identically, so one variant's posts were
 absent from the only page they belonged on — and `generateStaticParams` emitted
-duplicate params. Not triggered in the earlier implementation (checked: 46, 50
-and 45 tag slugs across the three locales, zero collisions today), but the
-mechanism is live and hand-authored frontmatter drifts.
+duplicate params. Not triggered in the earlier implementation (checked: every
+locale's tag slugs, zero collisions on audit day), but the mechanism is live
+and hand-authored frontmatter drifts.
 
 **Shipped:** tags grouped by slug, label chosen by frequency with an alphabetical
 tiebreak, posts matched by slug. [tags.md](tags.md)
@@ -195,8 +195,8 @@ Additions, designed in the skill and never run in the earlier implementation:
   three translations look like three articles about the same thing.
 - **The content validation script.** [operations.md](operations.md)
 - **`getIndexableTags(locale, minPosts)`,** defaulted to 1 so behaviour is
-  unchanged. The earlier implementation generated a page for every tag: 46 tags
-  over 23 English posts, so many pages held a single card. The threshold is
+  unchanged. The earlier implementation generated a page for every tag, about
+  two tags per post, so many pages held a single card. The threshold is
   offered, not imposed. [tags.md](tags.md)
 - **`variants` on `TagSummary`** as a spelling-drift signal.
 - **`usedFallbackParser` on `Post`,** so a weak parse is visible.
@@ -212,7 +212,7 @@ Additions, designed in the skill and never run in the earlier implementation:
 
 ## Left behind
 
-- **29 SVG cover motifs.** Brand artwork, not capability. The registry, the type
+- **The SVG cover motifs.** Brand artwork, not capability. The registry, the type
   guard, the deterministic accent hash and two example motifs are shipped; draw
   your own. [rendering.md](rendering.md)
 - **The host's design tokens, `Header`/`Footer`, motion provider, chat widget and
