@@ -8,9 +8,12 @@ is statically generated at build time. Content lives in the repository; there is
 The whole design turns on one idea: **a post's identity is its `translationKey`, not its slug.** Slugs are
 localized for SEO and differ per language; the key is what makes three files one article, and it is what
 powers hreflang, the language switcher, related posts and cross-locale redirects. This skill was written by
-the engineer who built a production marketing site on this design. The audit of that earlier implementation
-found twelve defects, every one of them silent, and the templates are built so none can recur without a build
-failing or a test going red.
+the engineer who has shipped this module; the earlier implementation it was audited against was a
+multi-locale, statically generated marketing blog. The templates hold the properties such a blog has to hold:
+every translation resolves to its siblings through the key, every tag page lists every post that carries the
+tag under any spelling, a file that `gray-matter` cannot parse still loads, and each content file is read
+once per build. The content-layer suite and the build verify each one;
+[references/provenance.md](references/provenance.md) has the record.
 
 The filesystem is a seam, not a premise: reading happens behind one `loadLocale(locale)` function, so a CMS
 fetch with the same signature replaces it without touching the routes, the tag pages or the feeds.
@@ -43,7 +46,7 @@ mkdir -p ~/.agents/skills
 ln -s ~/.claude/skills/blog-markdown ~/.agents/skills/blog-markdown
 ```
 
-Update the skill with `git pull` in its directory. The current release is **0.1.4**. See
+Update the skill with `git pull` in its directory. The current release is **0.1.5**. See
 [`CHANGELOG.md`](CHANGELOG.md). The [skills index](https://github.com/timerise-ai/skills) lists the other
 Timerise Skills and how to install them all at once.
 
@@ -72,22 +75,25 @@ the skill stays cheap in context until a topic is actually needed.
 | `references/rendering.md` | Markdown to React, code blocks, cover motifs and accents, the XSS boundary |
 | `references/operations.md` | The content validation script, build cost, authoring workflow |
 | `references/testing.md` | Seven fixtures and the 20-test content-layer suite |
-| `references/provenance.md` | The twelve defects found in the earlier implementation and how the templates fix them |
+| `references/provenance.md` | The engineering ledger: what the audit of the earlier implementation changed and how the templates verify it, what was kept, what was added |
 
 ## The four non-negotiables
 
-These travel with the module and are never optional. Each one was live in the earlier implementation (see
-`references/provenance.md`):
+These travel with the module and are never optional. Each one is verified by the content-layer suite or the
+build; `references/provenance.md` has the record:
 
 1. **`gray-matter` caches a failed parse as an empty result.** It writes its cache entry before parsing, so
    the second and every later parse of a file whose YAML throws returns `{}`, with no error and no
-   frontmatter. Always call `matter(contents, {})`; any options object opts out of the cache.
-2. **Relations are authored once, in the default locale.** A translated file that omits `related` must still
-   resolve through `translationKey`, or the section quietly does not render.
+   frontmatter. Always call `matter(contents, {})`; any options object opts out of the cache. The re-parse
+   test in the suite holds it.
+2. **Relations are authored once, in the default locale.** A translated file that omits `related` resolves
+   through `translationKey` to the default locale's relations, so every translation renders the same related
+   section. The fallback test holds it.
 3. **A tag's identity is its slug, not its label.** `"AI Agents"` and `"AI agents"` slug to the same URL;
-   group and match by slug or one spelling variant's posts vanish from their own tag page.
-4. **Loading is O(posts x locales) per page unless you memoize.** Measured on the earlier implementation: a
-   71x file-read amplification at build time, all from resolving alternates during `generateMetadata`.
+   group and match by slug, so every spelling variant's posts appear on the one tag page. Two tests hold it.
+4. **Loading is O(posts x locales) per page unless you memoize.** Memoize per locale so each content file is
+   read once per build; resolving alternates in `generateMetadata` is otherwise a 71x file-read
+   amplification, measured on the earlier implementation.
 
 Everything else is the host app's: styling, naming, renderer, i18n system, cover artwork.
 
@@ -110,7 +116,7 @@ or a reproduction.
 
 Adding, removing or renaming a file in `references/` means updating the quick start and the reference
 directory table in `SKILL.md`, the file table above, and any relative cross-links. The odd-looking parts of
-the templates encode documented defects, and `references/provenance.md` is the ledger that must stay truthful:
+the templates are there for reasons `references/provenance.md` records, and that ledger must stay truthful:
 read it before simplifying anything, and add an entry for anything you change. Commits follow Conventional
 Commits and releases follow [STANDARD.md](https://github.com/timerise-ai/skills/blob/main/STANDARD.md) in the
 index; `CLAUDE.md` carries the full editing conventions.

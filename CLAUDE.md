@@ -14,16 +14,16 @@ repository. The `node --experimental-strip-types --test` invocation in `referenc
 generated app, against fixtures the agent creates there.
 
 The skill was written by the engineer who has shipped this module; the earlier implementation it was audited
-against was a multi-locale, statically generated marketing blog.
-`references/provenance.md` records the twelve defects found in it, what was kept deliberately, what was added
-and what was left behind. That file is the rationale layer — read it before "simplifying" anything.
+against was a multi-locale, statically generated marketing blog. `references/provenance.md` is the ledger of
+that audit: twelve entries on what changed and how the templates verify it, what was kept deliberately, what
+was added and what was left behind. That file is the rationale layer: read it before "simplifying" anything.
 
 ## Structure
 
 - `SKILL.md` — entry point. The frontmatter `description` is the trigger surface; the body carries the
   architecture diagram, seven **critical facts**, four **hard rules**, the quick-start order, and the
   **reference directory table** mapping trigger keywords to files.
-- `README.md` — the human-facing front door: install, the file table, and the four silent failure modes.
+- `README.md`: the human-facing front door: install, the file table, and the four non-negotiables.
 - `references/*.md` — one topic per file, loaded on demand. `adaptation.md` (the seam contract) and
   `content-model.md` (frontmatter schema) are the design entry points; `content-loader.md`,
   `i18n-and-routing.md`, `tags.md`, `pages-and-seo.md` and `rendering.md` carry the templates;
@@ -48,11 +48,11 @@ and what was left behind. That file is the rationale layer — read it before "s
   line-by-line frontmatter fallback, the `.md` filter in `getPostSlugs`, the default-locale `related`
   fallback resolved through `translationKey`, grouping and matching tags by slug rather than label, the
   loader memoization, the explicit draft filter, `timeZone: "UTC"` in date formatting, and the language
-  switcher returning the blog index on a tag URL: each is a measured defect from the earlier implementation
-  or a documented judgement call. Check `provenance.md` before touching one.
-- **The numbers that remain are load-bearing.** The 71x read amplification, 20 tests, twelve defects, seven
-  fixtures. They were verified against the earlier implementation or this repository; do not restate them
-  loosely and do not add new ones. Corpus figures of the earlier implementation (how many posts, tags,
+  switcher returning the blog index on a tag URL: each is a ledger entry from the audit of the earlier
+  implementation or a documented judgement call. Check `provenance.md` before touching one.
+- **The numbers that remain are load-bearing.** The 71x read amplification, 20 tests, twelve ledger entries,
+  seven fixtures. They were verified against the earlier implementation or this repository; do not restate
+  them loosely and do not add new ones. Corpus figures of the earlier implementation (how many posts, tags,
   pages, locales) do not appear anywhere: describe the shape of a finding instead.
 - **Mark additions as additions.** Anything designed in the skill and never run in the earlier implementation
   belongs in the "Added" section of `provenance.md`, stated as such. The skill's credibility is that it

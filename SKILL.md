@@ -27,7 +27,9 @@ cross-locale redirects. Get that one field right and everything else is lookups.
 
 Written by the engineer who has shipped this module. The earlier implementation
 it was audited against was a multi-locale, statically generated marketing blog
-with its sitemap and SEO surface.
+with its sitemap and SEO surface. The facts and rules below are what the
+content-layer suite and the build verify; `references/provenance.md` has the
+record.
 
 ## When to use
 
@@ -68,24 +70,25 @@ content/blog/<locale>/<localized-slug>.md   # frontmatter + body
 
 1. **Relations are authored once, in the default locale, as default-locale
    slugs.** A translated file may omit `related` entirely and still get the right
-   related posts, resolved through `translationKey`. In the earlier
-   implementation this fallback was missing and **most translated posts silently
-   showed no related section**.
+   related posts, resolved through `translationKey`, so every translation
+   renders the same related section. The fallback test holds it.
 2. **A tag's identity is its slug, not its label.** `"AI Agents"` and
-   `"AI agents"` slug to the same URL. Group by slug and match posts by slug, or
-   one spelling variant's posts vanish from its own tag page.
+   `"AI agents"` slug to the same URL. Group by slug and match posts by slug, so
+   every spelling variant's posts appear on the one tag page. Two tests hold it.
 3. **`gray-matter` throws on a double-quoted YAML scalar containing raw quote
    characters** — typographic quotes in a translated excerpt do it. Without a
-   fallback parser the build dies on one content file. Verified live.
+   fallback parser the build stops on that one file; the line-by-line fallback
+   keeps it loading. Verified against the library and covered by a test.
 4. **`gray-matter` caches a failed parse as an empty result.** It writes its
    cache entry before parsing, so the second and every later parse of a file
    that threw returns `{}` — no error, no frontmatter. Always call
    `matter(contents, {})`; any options object opts out of the cache.
-5. **Loading is O(posts x locales) per page unless you memoize.** Measured on the
-   earlier implementation: a 71x file-read amplification at build time, all from
-   resolving alternates during `generateMetadata`.
-6. **`getPostSlugs` must filter `.md`.** A stray `.DS_Store` makes the loader
-   read `.DS_Store.md`, throw `ENOENT`, and fail the entire build.
+5. **Loading is O(posts x locales) per page unless you memoize.** Memoize per
+   locale so each content file is read once per build; resolving alternates in
+   `generateMetadata` is otherwise a 71x file-read amplification, measured on
+   the earlier implementation.
+6. **`getPostSlugs` must filter `.md`.** The filter keeps a stray `.DS_Store`
+   from becoming a `.DS_Store.md` read and an `ENOENT`. A test holds it.
 7. **Tag pages have no cross-locale identity.** Tags are per-locale free text, so
    the language switcher must fall back to the blog index on a tag URL rather
    than build a URL that 404s.
@@ -94,14 +97,15 @@ content/blog/<locale>/<localized-slug>.md   # frontmatter + body
 
 > **Never key cross-locale lookups on the slug.** Slugs are localized on purpose.
 > `translationKey` is the join column; a slug match across locales is a
-> coincidence you will ship a bug on.
+> coincidence, not a relation.
 
-> **Never let `getPostBySlug` decide draft visibility implicitly.** In the earlier
-> implementation drafts were kept out of production only as a side effect of
-> `dynamicParams = false`. Flip that flag for any reason and every draft is live.
+> **Never let `getPostBySlug` decide draft visibility implicitly.** Filter
+> drafts in the loader; `dynamicParams = false` hides them only as a side effect
+> and stops doing so the moment the flag changes. The draft test holds the
+> filter.
 
-> **Never render a "5 min read" constant.** The earlier implementation printed a
-> hardcoded 5 on every card. Compute it from the body; it costs one `split`.
+> **Never render a "5 min read" constant.** Compute it from the body; it costs
+> one `split`, and the reading-time test holds it.
 
 > **Never derive a tag page's URL from the label at read time and the label from
 > the URL at render time without a collision check.** That round trip is only
@@ -140,4 +144,4 @@ a rename.
 | Validating content, build cost, editor workflow | validation, CI check, build time, drafts, authoring, operator | [operations.md](references/operations.md) |
 | Fixtures and the passing test suite | test, fixture, vitest, node:test, regression, assert | [testing.md](references/testing.md) |
 | Fitting it into a host app: seams, renames, probe | adapt, port, host, seam, rename, CMS, integrate | [adaptation.md](references/adaptation.md) |
-| What was fixed, kept, and added vs. the earlier implementation | provenance, deviations, fidelity, defects | [provenance.md](references/provenance.md) |
+| The audit ledger: what changed, was kept and was added vs. the earlier implementation | provenance, deviations, fidelity, audit, ledger | [provenance.md](references/provenance.md) |
