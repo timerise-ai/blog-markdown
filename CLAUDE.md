@@ -21,8 +21,9 @@ was added and what was left behind. That file is the rationale layer: read it be
 ## Structure
 
 - `SKILL.md` — entry point. The frontmatter `description` is the trigger surface; the body carries the
-  architecture diagram, seven **critical facts**, four **hard rules**, the quick-start order, and the
-  **reference directory table** mapping trigger keywords to files.
+  architecture diagram, seven **critical facts**, four **hard rules**, the quick-start order, the
+  **reference directory table** mapping trigger keywords to files, and a closing line linking the skills
+  index.
 - `README.md`: the human-facing front door: install, the file table, and the four non-negotiables.
 - `references/*.md` — one topic per file, loaded on demand. `adaptation.md` (the seam contract) and
   `content-model.md` (frontmatter schema) are the design entry points; `content-loader.md`,

@@ -145,3 +145,5 @@ a rename.
 | Fixtures and the passing test suite | test, fixture, vitest, node:test, regression, assert | [testing.md](references/testing.md) |
 | Fitting it into a host app: seams, renames, probe | adapt, port, host, seam, rename, CMS, integrate | [adaptation.md](references/adaptation.md) |
 | The audit ledger: what changed, was kept and was added vs. the earlier implementation | provenance, deviations, fidelity, audit, ledger | [provenance.md](references/provenance.md) |
+
+Part of the [Timerise Skills](https://github.com/timerise-ai/skills) index, which lists the sibling skills.
