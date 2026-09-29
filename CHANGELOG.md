@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.7] - 2026-09-29
+
+Wording release. Templates and technical content are unchanged from 0.1.6, apart
+from the separator in the post header, now `|` instead of a middle dot.
+
+### Changed
+
+- Every em-dash, en-dash, arrow, middle dot and ellipsis in the markdown is
+  rewritten as plain punctuation; the typographic quotes in the YAML fixtures
+  stay, since they are what the fallback parser is tested against.
+- The origin is stated in the words of the skill standard throughout: the 0.1.0
+  entry no longer carries corpus figures, ratios in `references/provenance.md`
+  and `references/testing.md` are described by their shape, and the YAML example
+  in `references/content-loader.md` uses the generic fixture excerpt.
+- `README.md` lists `evals/` and the agent eval workflow in its file table;
+  `CLAUDE.md` describes both, the README section order and the changelog.
+
 ## [0.1.6] - 2026-09-21
 
 Wording release. The skill content is unchanged from 0.1.5.
