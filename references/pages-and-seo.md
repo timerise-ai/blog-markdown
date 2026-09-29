@@ -8,7 +8,7 @@ app/[lang]/blog/page.tsx              index
 app/[lang]/blog/[slug]/page.tsx       post
 app/[lang]/blog/tag/[slug]/page.tsx   tag
 app/sitemap.ts                        sitemap.xml
-app/feed.xml/route.ts                 RSS  (addition — see provenance.md)
+app/feed.xml/route.ts                 RSS  (addition, see provenance.md)
 ```
 
 Styling below is structural only. Replace the utility classes with the host's
@@ -89,7 +89,7 @@ export default async function BlogPostPage({ params }: Props) {
   const post = getPostBySlug(slug, lang);
 
   if (!post) {
-    // The slug may belong to another locale — a link shared in one language and
+    // The slug may belong to another locale: a link shared in one language and
     // opened in another. Send the reader to the canonical translated URL rather
     // than 404-ing a link that was correct when it was posted.
     const localized = resolveLocalizedSlug(slug, lang);
@@ -103,9 +103,9 @@ export default async function BlogPostPage({ params }: Props) {
         <h1>{post.title}</h1>
         <p>
           <time dateTime={post.date}>{formatDate(post.date, lang)}</time>
-          {" · "}
+          {" | "}
           {t.by} {post.author}
-          {" · "}
+          {" | "}
           {post.readingMinutes} {t.minRead}
         </p>
       </header>
@@ -119,7 +119,7 @@ export default async function BlogPostPage({ params }: Props) {
 ```
 
 `redirect()` throws, so TypeScript narrows `post` to non-null after the block
-only if `notFound()` is the last statement — it is, and both are typed `never`.
+only if `notFound()` is the last statement; it is, and both are typed `never`.
 
 ### Dates
 
@@ -139,7 +139,7 @@ export function formatDate(date: string, locale: Locale): string {
 **`timeZone: "UTC"` is required, not cosmetic.** Without it a date-only
 `"2026-02-09"` is parsed as UTC midnight and rendered in the server's zone, so a
 build machine west of Greenwich prints the 8th. It renders one day early, only in
-some deployments, and only for some posts — the worst kind of bug to chase.
+some deployments, and only for some posts, the worst kind of bug to chase.
 
 The map is keyed by `Locale`, so adding a locale is a type error rather than a
 silent fallback to `en-US`. The earlier implementation used
@@ -164,7 +164,7 @@ const jsonLd = {
 <script
   type="application/ld+json"
   // Post content is trusted (repo-authored). If it ever is not, escape `<` in
-  // the serialized JSON — a `</script>` inside a title closes the tag.
+  // the serialized JSON: a `</script>` inside a title closes the tag.
   dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
 />;
 ```
@@ -196,7 +196,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: interpolate(t.tag_heading, { tag: tag.label }),
-    // Localized, interpolated — not English boilerplate under every locale.
+    // Localized, interpolated, not English boilerplate under every locale.
     description: interpolate(t.tag_meta_description, { tag: tag.label, count: tag.count }),
     alternates: { canonical: tagPath(lang, tag.slug) },
   };
@@ -251,7 +251,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
   );
 
-  // A tag page's freshness is its newest post, not the build time — otherwise
+  // A tag page's freshness is its newest post, not the build time; otherwise
   // every tag page claims to have changed on every deploy and lastModified
   // stops carrying information.
   const tags = byLocale.flatMap(({ locale, posts }) =>
@@ -347,7 +347,7 @@ Link it from the layout so readers and crawlers find it:
 
 With content deployed alongside the app, every publish is a rebuild and
 `revalidate` is a safety net, not the delivery mechanism. If you move the content
-to a CMS, these become the actual publish latency — lower them and add on-demand
+to a CMS, these become the actual publish latency: lower them and add on-demand
 revalidation by tag.
 
 ## Checklist

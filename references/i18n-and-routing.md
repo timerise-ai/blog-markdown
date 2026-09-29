@@ -1,7 +1,7 @@
 # i18n and routing
 
 Three locales, three slugs, one article. This file covers how a reader gets to
-the right one — from a search engine, from the language switcher, and from a link
+the right one: from a search engine, from the language switcher, and from a link
 someone shared in the wrong language.
 
 ## URL shape
@@ -82,15 +82,15 @@ export function getLanguageAlternates(translationKey: string): Record<string, st
 **This function is why the loader must be memoized.** It touches every locale's
 full index and runs once per page in `generateMetadata`.
 
-The index fallback is a judgement call, not a rule. The alternative — omitting
-untranslated locales — gives a stricter hreflang cluster but a dead end in the
+The index fallback is a judgement call, not a rule. The alternative, omitting
+untranslated locales, gives a stricter hreflang cluster but a dead end in the
 switcher. Pick one and be consistent; do not point hreflang at a URL that 404s.
 
 ## Cross-locale slug resolution
 
 The problem: someone shares `/blog/agent-experience-optimization` on social. A
 German reader opens it; the host's locale detection prefixes it to
-`/de/blog/agent-experience-optimization`. That German slug does not exist — the
+`/de/blog/agent-experience-optimization`. That German slug does not exist; the
 German file is `agent-experience-optimierung.md`. Naively that is a 404 on a link
 that was correct when it was posted.
 
@@ -110,7 +110,7 @@ export function resolveLocalizedSlug(slug: string, targetLocale: Locale): string
 }
 ```
 
-Call it only on the miss path — after `getPostBySlug` returns `null` — and issue
+Call it only on the miss path, after `getPostBySlug` returns `null`, and issue
 a **redirect**, not a rewrite, so the reader ends up on the canonical URL and the
 link equity consolidates there. Iterate `LOCALES` in declaration order so the
 result is deterministic when two locales happen to share a slug.
@@ -126,7 +126,7 @@ Switching language on a blog URL is three cases, and only the first is obvious:
 | `/blog/tag/<slug>` | `/de/blog` | **tags have no cross-locale identity** |
 
 The third row is the one that bites. Tags are free-text strings authored per
-locale — `"Rezerwacje"` is not a translation of `"Booking"` recorded anywhere in
+locale: `"Rezerwacje"` is not a translation of `"Booking"` recorded anywhere in
 the content. There is no correct target tag URL, so falling back to the blog
 index is the honest answer. Building `/de/blog/tag/booking` from the English slug
 produces a 404 for a page that never existed.
@@ -214,7 +214,7 @@ export function interpolate(template: string, values: Record<string, string | nu
 
 Server components read the locale's dictionary directly from disk or an import;
 client components (a card with a hover animation, the switcher) need it through
-context. Both are host concerns — the module only requires that a string never
+context. Both are host concerns; the module only requires that a string never
 appears as a literal.
 
 The one module-specific rule: **`readingMinutes` is computed on the server and

@@ -1,6 +1,6 @@
 # Content loader
 
-Reading markdown off disk, parsing it, and — critically — not doing that 71 times
+Reading markdown off disk, parsing it, and, critically, not doing that 71 times
 per page. This is the module's only I/O boundary and the only place the content
 source is named, which makes it the seam a CMS replaces.
 
@@ -57,7 +57,7 @@ export type ParsedFile = {
 const BLOCK = /^\uFEFF?---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/;
 
 /**
- * Fallback for files whose frontmatter is not valid YAML — most often a
+ * Fallback for files whose frontmatter is not valid YAML, most often a
  * double-quoted scalar containing raw quote characters, which typographic
  * quotes in a translated excerpt produce. Cannot read values spanning more
  * than one line; that limitation is why `usedFallback` is reported.
@@ -80,7 +80,7 @@ function parseLineByLine(block: string): Frontmatter {
         frontMatter[key] = JSON.parse(value) as FrontmatterValue;
         continue;
       } catch {
-        // Not JSON either — fall through and keep it as a string.
+        // Not JSON either: fall through and keep it as a string.
       }
     }
 
@@ -96,7 +96,7 @@ function parseLineByLine(block: string): Frontmatter {
 }
 
 // YAML turns an unquoted `date: 2026-02-09` into a Date; every consumer wants a
-// string, so normalize it back — keeping the time only if the source had one.
+// string, so normalize it back, keeping the time only if the source had one.
 function normalize(value: unknown): unknown {
   if (value instanceof Date) {
     const iso = value.toISOString();
@@ -116,7 +116,7 @@ export function parseFrontmatter(fileContents: string): ParsedFile {
   let usedFallback = false;
   try {
     // The `{}` is load-bearing. gray-matter memoizes by content string, and it
-    // writes the cache entry BEFORE parsing — so a file that throws a YAML
+    // writes the cache entry BEFORE parsing, so a file that throws a YAML
     // error leaves an empty `{ data: {} }` in the cache, and every later parse
     // of that file returns no frontmatter at all, with no error. Passing any
     // options object bypasses the cache. See "The poisoned cache" below.
@@ -137,22 +137,21 @@ export function parseFrontmatter(fileContents: string): ParsedFile {
 
 ### Why the fallback exists
 
-`gray-matter` delegates to `js-yaml`, which throws on this real content file:
+`gray-matter` delegates to `js-yaml`, which throws on a content file shaped like this:
 
 ```yaml
-excerpt: "Dziś wkraczamy w erę agentów AI, którzy nie tylko „wiedzą", ale „działają"..."
+excerpt: "Agenci, którzy nie tylko „wiedzą", ale „działają"..."
 ```
 
 ```
 YAMLException: end of the stream or a document separator is expected
-  at line 6, column 158
 ```
 
 The typographic quotes close the double-quoted scalar early. **Without the
 fallback the entire build fails on one file**, and the error names a YAML column
 rather than a post, so it reads as a tooling problem rather than a content one.
 
-Do not "clean up" the fallback. Do surface `usedFallback` — a file on the
+Do not "clean up" the fallback. Do surface `usedFallback`: a file on the
 fallback path loses any value written across multiple lines, so a Prettier-wrapped
 `related:` array in such a file silently becomes `undefined`.
 
@@ -163,7 +162,7 @@ The fallback alone is not enough, and this is the subtlest defect in the module.
 the entry **before** parsing:
 
 ```js
-// gray-matter/index.js — abridged
+// gray-matter/index.js, abridged
 let file = toFile(input);
 const cached = matter.cache[file.content];
 if (!options) {
@@ -178,8 +177,8 @@ So for a file whose YAML fails:
 
 | Call | Result |
 |---|---|
-| 1st | throws → your fallback runs → correct frontmatter |
-| 2nd | **returns `{ data: {} }` from the cache — no throw, no data** |
+| 1st | throws, then your fallback runs and returns correct frontmatter |
+| 2nd | **returns `{ data: {} }` from the cache, with no throw and no data** |
 | 3rd+ | same |
 
 The second parse onward yields a post with an empty title, an empty date, no
@@ -187,7 +186,7 @@ tags, and `translationKey` collapsed to the slug. Nothing errors. Reproduced on
 real content:
 
 ```
-call 1: title="Idealny backend dla agentów AI…" tags=["GraphQL","API","AI"] date="2025-11-27T…"
+call 1: title="(the post's title)" tags=["GraphQL","API","AI"] date="2025-11-27T..."
 call 2: title=undefined tags=undefined date=undefined
 call 3: title=undefined tags=undefined date=undefined
 ```
@@ -197,11 +196,11 @@ post sorts last (empty date), renders an untitled card, disappears from its own
 tag pages (no tags), and breaks its hreflang cluster (`translationKey` is now the
 slug, so its translations no longer find it).
 
-Passing `{}` opts out of gray-matter's cache entirely — the comment in its source
+Passing `{}` opts out of gray-matter's cache entirely; the comment in its source
 says as much. You lose nothing: `loadLocale`'s own memoization is strictly better,
 because it caches the finished `Post`, not a re-parse.
 
-**Memoizing the loader hides this bug rather than fixing it** — with one parse per
+**Memoizing the loader hides this bug rather than fixing it**: with one parse per
 file per process the cache is never read a second time. Do both. The next person
 who adds a second call site should not resurrect it.
 
@@ -255,7 +254,7 @@ export function readingTimeMinutes(content: string): number {
   return Math.max(1, Math.round(words / WORDS_PER_MINUTE));
 }
 
-/** Filenames only — `.md` filter included. See "The .DS_Store bug" below. */
+/** Filenames only, `.md` filter included. See "The .DS_Store bug" below. */
 export function getPostSlugs(locale: Locale): string[] {
   const localeDirectory = path.join(postsDirectory, locale);
   if (!fs.existsSync(localeDirectory)) return [];
@@ -357,8 +356,8 @@ lets real I/O errors propagate.
 
 The earlier implementation's `getPostSlugs` returned `fs.readdirSync(dir)` unfiltered and
 `getPostBySlug` appended `.md` after stripping a trailing `.md`. On any macOS
-checkout where Finder has opened the folder, that is `readFileSync(".DS_Store.md")`
-→ `ENOENT` → **the whole build fails**, with an error naming a file the author
+checkout where Finder has opened the folder, that is `readFileSync(".DS_Store.md")`,
+an `ENOENT`, and **the whole build fails**, with an error naming a file the author
 never created. One `.filter()` prevents it. The same applies to `.mdx`, editor
 swap files, and `README.md` if you keep notes beside the content.
 
@@ -410,7 +409,7 @@ posts roughly quadruples the reads, each one a `readFileSync` plus a full
 
 Two things make the cache safe:
 
-- **Content cannot change while a production process lives** — it is deployed
+- **Content cannot change while a production process lives**: it is deployed
   with the build. There is nothing to invalidate.
 - **Development bypasses it**, so editing a file and reloading works.
 
@@ -423,7 +422,7 @@ Everything above `loadLocale` is source-agnostic. To back this with a CMS,
 replace `loadLocale` with one that fetches a locale's posts and maps them onto
 `Post`; keep the memoization (per request, via React `cache`, rather than per
 process) and keep `translationKey` as the identity field. The rest of the
-skill — tags, alternates, relations, routes — is unchanged.
+skill, tags, alternates, relations and routes, is unchanged.
 
 ## Checklist
 
@@ -431,7 +430,7 @@ skill — tags, alternates, relations, routes — is unchanged.
 - [ ] `getPostSlugs` filters `.md`
 - [ ] Missing locale directory returns `[]`, not a throw
 - [ ] `parseFrontmatter` anchored, CRLF-tolerant, with the line-parser fallback
-- [ ] `matter(contents, {})` — gray-matter's own cache opted out of
+- [ ] `matter(contents, {})`: gray-matter's own cache opted out of
 - [ ] `usedFallback` surfaced to the validator
 - [ ] Dates normalized to strings; sorting is `localeCompare`, not `new Date`
 - [ ] Loader memoized in production, bypassed in development

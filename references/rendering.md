@@ -1,7 +1,7 @@
 # Rendering
 
 Markdown body to React, and the cover system. Both are places where the host's
-design system takes over — the skill supplies structure, the host supplies looks.
+design system takes over: the skill supplies structure, the host supplies looks.
 
 ## Markdown renderer
 
@@ -32,7 +32,7 @@ const H2_CLASS = "text-xl font-bold mt-10 mb-4";
 
 const markdownComponents: Components = {
   // The page owns the h1. If deep markdown carries one, demote it rather than
-  // emitting a second h1 — two h1s on a post is an accessibility and SEO defect.
+  // emitting a second h1; two h1s on a post is an accessibility and SEO defect.
   h1: styled("h2", H2_CLASS),
   h2: styled("h2", H2_CLASS),
   h3: styled("h3", "text-lg font-bold mt-8 mb-3"),
@@ -84,7 +84,7 @@ const markdownComponents: Components = {
     const languageMatch = /language-(\w+)/.exec(className ?? "");
     const language = languageMatch?.[1];
     const codeString = String(children).replace(/\n$/, "");
-    // A fenced block with no language still spans lines — treat it as a block,
+    // A fenced block with no language still spans lines: treat it as a block,
     // or multi-line code renders as an inline pill.
     const isBlock = Boolean(language) || codeString.includes("\n");
 
@@ -151,7 +151,7 @@ Say which regime you are in near the renderer. The next reader will otherwise ad
 
 ### Server or client
 
-`MarkdownRenderer` has no state and no handlers — keep it a **server component**.
+`MarkdownRenderer` has no state and no handlers, so keep it a **server component**.
 Rendering markdown on the client ships the parser, the GFM plugin and the
 highlighter to every reader for output that never changes.
 
@@ -187,7 +187,7 @@ export function resolveAccent(name?: string): string {
 
 /**
  * Deterministic accent from a tag. Two posts with the same first tag always get
- * the same colour, and it never changes between builds — a random or
+ * the same colour, and it never changes between builds; a random or
  * index-based choice would reshuffle the whole index whenever a post is added.
  */
 export function getAccentForTag(tag?: string): string {
@@ -246,7 +246,7 @@ export default function BlogCover({
   const accentColor = accent ? resolveAccent(accent) : getAccentForTag(tags?.[0]);
 
   // The accent reaches the SVG as a CSS variable, so a motif is a plain static
-  // component with no props — adding one is a file, not a signature change.
+  // component with no props: adding one is a file, not a signature change.
   const style = { "--cover-accent": accentColor } as CSSProperties;
 
   return (
@@ -254,7 +254,7 @@ export default function BlogCover({
       className="relative h-full w-full overflow-hidden"
       style={style}
       // The cover carries no information the title does not, but it is not
-      // decorative either — role+label keeps it announced once, not twice.
+      // decorative either; role+label keeps it announced once, not twice.
       role="img"
       aria-label={title}
     >
@@ -324,7 +324,7 @@ Rules that are not cosmetic:
   component to count words. The earlier implementation sidestepped this by
   printing a hardcoded `5 min read` on every card, for every post, in every
   language.
-- **The cover link needs `aria-label={title}`** — it wraps an image, so without
+- **The cover link needs `aria-label={title}`**: it wraps an image, so without
   it screen readers announce an unlabelled link, and it duplicates the title
   link below it.
 - **Excerpt clamping is CSS** (`line-clamp-3`), not a JS truncation. Truncating

@@ -13,7 +13,7 @@ content/blog/
 ```
 
 One directory per locale. **The filename (minus `.md`) must equal the `slug`
-field** — the loader addresses files by slug, so a mismatch produces a post that
+field**: the loader addresses files by slug, so a mismatch produces a post that
 lists but 404s. The validation script in [operations.md](operations.md) checks it.
 
 Slugs are localized on purpose: a Polish reader and Google both want a Polish
@@ -23,13 +23,13 @@ URL. That is precisely why nothing may key off the slug across locales.
 
 | Field | Type | Required | Purpose |
 |---|---|---|---|
-| `translationKey` | string | **yes** | Cross-locale identity. Same value in all locales. Defaults to the slug if absent, which silently breaks alternates — always set it. |
+| `translationKey` | string | **yes** | Cross-locale identity. Same value in all locales. Defaults to the slug if absent, which silently breaks alternates; always set it. |
 | `title` | string | yes | |
 | `date` | string | yes | ISO. Quote it (see "The date trap" below). |
 | `slug` | string | yes | Must match the filename. |
 | `excerpt` | string | yes | Card copy and meta description. |
 | `author` | string | no | Falls back to a configured default. |
-| `tags` | string[] | no | Free text. Slugged for URLs — see [tags.md](tags.md). |
+| `tags` | string[] | no | Free text. Slugged for URLs; see [tags.md](tags.md). |
 | `related` | string[] | no | **Default-locale slugs**, not local ones. See below. |
 | `coverImage` | string | no | Public path to a raster cover. |
 | `coverMotif` | string | no | Key into the generated-cover registry. Takes precedence over `coverImage` when both are set. |
@@ -63,14 +63,14 @@ Body starts here.
 
 ## The three load-bearing fields
 
-### `translationKey` — identity
+### `translationKey`: identity
 
 The join column. Three files share one key and are therefore one article.
 It drives:
 
-- **hreflang / `alternates.languages`** — the other locales' URLs
-- **the language switcher** — which post to switch *to*, not just which locale
-- **cross-locale redirects** — an English link opened under `/de` resolves to the
+- **hreflang / `alternates.languages`**: the other locales' URLs
+- **the language switcher**: which post to switch *to*, not just which locale
+- **cross-locale redirects**: an English link opened under `/de` resolves to the
   German slug instead of 404-ing
 - **related-post resolution across locales**
 
@@ -78,11 +78,11 @@ Rules:
 
 - Set it explicitly in every file. The loader's fallback (`slug`) makes a missing
   key look fine in one locale and break silently in the other two.
-- Never change it after publication — it is the article's permanent identity.
+- Never change it after publication; it is the article's permanent identity.
 - Keep it stable and English even when the slug is not. It is an internal key,
   not a URL.
 
-### `related` — relations authored once
+### `related`: relations authored once
 
 `related` holds **default-locale slugs**, in every locale's file. A translated
 post may omit the field entirely.
@@ -108,7 +108,7 @@ Writing local slugs into a translated file's `related` is the common authoring
 mistake. They resolve against the default-locale index, find nothing, and are
 dropped without a warning. The validation script catches it.
 
-### `draft` — visibility
+### `draft`: visibility
 
 ```ts
 draft:
@@ -157,10 +157,10 @@ with an empty date sort last, which is the behaviour you want for a malformed fi
 
 ## Adding a locale
 
-1. Add the code to `LOCALES` (one place — see
+1. Add the code to `LOCALES` (one place; see
    [i18n-and-routing.md](i18n-and-routing.md)).
-2. Create `content/blog/<code>/`. An **empty or missing directory is legal** —
-   the loader returns `[]` — so the locale can ship before its translations.
+2. Create `content/blog/<code>/`. An **empty or missing directory is legal**:
+   the loader returns `[]`, so the locale can ship before its translations.
 3. Add the string keys for that locale.
 
 No code change. If adding a locale requires editing a hardcoded
@@ -174,5 +174,5 @@ in five places, only one of which was the config module.
 - [ ] `date` quoted, ISO
 - [ ] `excerpt` written for a search result, not truncated body text
 - [ ] `related` uses default-locale slugs, or is omitted in a translation
-- [ ] Tags reuse existing spellings — check `getTags()` output first
+- [ ] Tags reuse existing spellings; check `getTags()` output first
 - [ ] `bun run validate:content` (or the equivalent) passes

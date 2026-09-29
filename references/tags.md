@@ -22,7 +22,7 @@ produce clean ASCII slugs. Keep it: the alternative is percent-encoded URLs that
 look broken when pasted anywhere.
 
 Note what it does **not** do: it does not strip punctuation. `"CI/CD"` becomes
-`ci/cd` — an extra path segment that will not match the `[slug]` route. If your
+`ci/cd`, an extra path segment that will not match the `[slug]` route. If your
 tags can contain `/`, `?`, `#`, `&` or `.`, extend it:
 
 ```ts
@@ -53,7 +53,7 @@ posts.filter((post) => post.tags?.includes(tag));
 Two failures follow, and neither errors:
 
 1. **Posts disappear from their own tag page.** `getTagFromSlug` returns the
-   first label alphabetically — `"AI Agents"`. The filter then matches only that
+   first label alphabetically, `"AI Agents"`. The filter then matches only that
    exact string, so every post tagged `"AI agents"` is absent from `/blog/tag/ai-agents`.
    There is no other page they appear on.
 2. **`generateStaticParams` emits duplicate params.** Two labels, one slug. Next
@@ -111,7 +111,7 @@ export function getTags(locale: Locale = DEFAULT_LOCALE): TagSummary[] {
       return {
         slug,
         label: first ? first[0] : slug,
-        // Number of posts carrying the tag — equals getPostsByTagSlug().length.
+        // Number of posts carrying the tag; equals getPostsByTagSlug().length.
         count: group.posts,
         variants: sorted.map(([label]) => label),
       };
@@ -133,7 +133,7 @@ export function getPostsByTagSlug(slug: string, locale: Locale): Post[] {
 
 `getPostsByTagSlug` matching on the slug is the actual repair: both spellings
 land on one page, with the posts from both. `variants` then gives you a
-one-line drift report — see [operations.md](operations.md).
+one-line drift report; see [operations.md](operations.md).
 
 **Tag slugs are per-locale.** Do not build a cross-locale tag map; nothing in the
 content records that `"Booking"` and `"Rezerwacje"` are the same concept. See the
@@ -161,7 +161,7 @@ export function getIndexableTags(locale: Locale, minPosts = 1): TagSummary[] {
 Use `getIndexableTags` in `generateStaticParams` **and** in the sitemap, from one
 constant. If those two disagree you get either 404s in the sitemap or orphan
 pages. With `dynamicParams = false`, a tag below the threshold 404s at the
-routing layer, which is the behaviour you want — a URL with nothing on it should
+routing layer, which is the behaviour you want: a URL with nothing on it should
 not exist.
 
 Raising the threshold later removes URLs that may be indexed. Redirect them to
@@ -169,7 +169,7 @@ the blog index rather than letting them 404 if the tag ever ranked.
 
 ## Rendering tags
 
-- On a card, render `post.tags` — the author's own spelling — and link with
+- On a card, render `post.tags`, the author's own spelling, and link with
   `tagPath(locale, getTagSlug(tag))`. Readers see what was written; the URL is
   canonical.
 - On the tag page, render `tagSummary.label`.

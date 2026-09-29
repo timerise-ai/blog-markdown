@@ -43,7 +43,7 @@ record.
 | Instead of this | Use |
 |---|---|
 | A hosted CMS is the source of truth | that CMS's SDK; keep only `references/content-model.md` |
-| A docs site / help center (categories, sidebar, search) | a help-center skill — different navigation model |
+| A docs site / help center (categories, sidebar, search) | a help-center skill, a different navigation model |
 | A single-locale blog of <10 posts | plain `fs` + `gray-matter` inline; this is overhead |
 | Rendering user-submitted markdown | a sanitizing renderer; see the XSS note in `references/rendering.md` |
 
@@ -76,12 +76,12 @@ content/blog/<locale>/<localized-slug>.md   # frontmatter + body
    `"AI agents"` slug to the same URL. Group by slug and match posts by slug, so
    every spelling variant's posts appear on the one tag page. Two tests hold it.
 3. **`gray-matter` throws on a double-quoted YAML scalar containing raw quote
-   characters** — typographic quotes in a translated excerpt do it. Without a
+   characters**: typographic quotes in a translated excerpt do it. Without a
    fallback parser the build stops on that one file; the line-by-line fallback
    keeps it loading. Verified against the library and covered by a test.
 4. **`gray-matter` caches a failed parse as an empty result.** It writes its
    cache entry before parsing, so the second and every later parse of a file
-   that threw returns `{}` — no error, no frontmatter. Always call
+   that threw returns `{}`, with no error and no frontmatter. Always call
    `matter(contents, {})`; any options object opts out of the cache.
 5. **Loading is O(posts x locales) per page unless you memoize.** Memoize per
    locale so each content file is read once per build; resolving alternates in
@@ -113,22 +113,22 @@ content/blog/<locale>/<localized-slug>.md   # frontmatter + body
 
 ## Quick start
 
-1. Set the locale contract and the frontmatter schema —
+1. Set the locale contract and the frontmatter schema:
    [content-model.md](references/content-model.md)
-2. Build the loader (memoized, `.md`-filtered, fallback parser) —
+2. Build the loader (memoized, `.md`-filtered, fallback parser):
    [content-loader.md](references/content-loader.md)
-3. Wire locales, alternates and cross-locale redirects —
+3. Wire locales, alternates and cross-locale redirects:
    [i18n-and-routing.md](references/i18n-and-routing.md)
-4. Add tag grouping and tag pages — [tags.md](references/tags.md)
-5. Build the three routes, metadata and JSON-LD —
+4. Add tag grouping and tag pages: [tags.md](references/tags.md)
+5. Build the three routes, metadata and JSON-LD:
    [pages-and-seo.md](references/pages-and-seo.md)
-6. Render bodies and covers — [rendering.md](references/rendering.md)
-7. Add the validation script and read the operator gaps —
+6. Render bodies and covers: [rendering.md](references/rendering.md)
+7. Add the validation script and read the operator gaps:
    [operations.md](references/operations.md)
-8. Run the fixtures and tests — [testing.md](references/testing.md)
+8. Run the fixtures and tests: [testing.md](references/testing.md)
 
 Porting this into an existing app? Fill in the seam table in
-[adaptation.md](references/adaptation.md) first — it takes ten minutes and saves
+[adaptation.md](references/adaptation.md) first; it takes ten minutes and saves
 a rename.
 
 ## Reference directory

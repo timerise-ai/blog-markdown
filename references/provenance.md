@@ -12,7 +12,7 @@ transcribed unverified: each claim was checked against it, measured, or
 reproduced. Every code template compiles under `strict` and
 `--noUncheckedIndexedAccess`; the content layer has 20 passing tests
 ([testing.md](testing.md)). Route handlers, the renderer and the feed are
-type-checked but not behaviour-tested — stated as such rather than implied.
+type-checked but not behaviour-tested, and stated as such rather than implied.
 
 ## Fixed in the templates
 
@@ -22,13 +22,13 @@ The highest-severity finding, live in the earlier implementation. `gray-matter@4
 memoizes by content string and writes its cache entry **before** parsing, so a
 file whose YAML throws leaves an empty `{ data: {} }` behind. The module's
 fallback parser runs on the first parse and produces correct frontmatter; the
-second and every later parse of that file returns `{}` — **no error, no
-frontmatter** — and the fallback never runs again.
+second and every later parse of that file returns `{}`, with **no error and no
+frontmatter**, and the fallback never runs again.
 
 Reproduced against the real content file that fails YAML:
 
 ```
-call 1: title="(the post's title)" tags=["GraphQL","API","AI"] date="2025-11-27T…"
+call 1: title="(the post's title)" tags=["GraphQL","API","AI"] date="2025-11-27T..."
 call 2: title=undefined tags=undefined date=undefined
 call 3: title=undefined tags=undefined date=undefined
 ```
@@ -41,7 +41,7 @@ collapsed to the slug, which broke its hreflang cluster.
 
 **Shipped:** `matter(fileContents, {})`. Any options object opts out of the
 cache, per gray-matter's own source comment. Loader memoization would also mask
-this, which is exactly why both are shipped — masking is not fixing.
+this, which is exactly why both are shipped: masking is not fixing.
 [content-loader.md](content-loader.md), regression test in
 [testing.md](testing.md)
 
@@ -73,7 +73,7 @@ development so edits still hot-reload. Each file is read once.
 
 `getPostSlugs` returned every directory entry unfiltered; `getPostBySlug`
 appended `.md`. On any macOS checkout where Finder has opened the content folder,
-that is `readFileSync(".DS_Store.md")` → `ENOENT` → build failure, reported
+that is `readFileSync(".DS_Store.md")`, an `ENOENT` and a failed build, reported
 against a file the author never created.
 
 **Shipped:** `.filter(name => name.endsWith(".md"))`.
@@ -84,7 +84,7 @@ against a file the author never created.
 `getTagFromSlug` resolved a URL slug to the first matching label alphabetically,
 then posts were filtered by that exact label. Two spellings of one tag
 (`"AI Agents"` / `"AI agents"`) slug identically, so one variant's posts were
-absent from the only page they belonged on — and `generateStaticParams` emitted
+absent from the only page they belonged on, and `generateStaticParams` emitted
 duplicate params. Not triggered in the earlier implementation (checked: every
 locale's tag slugs, zero collisions on audit day), but the mechanism is live
 and hand-authored frontmatter drifts.
@@ -104,8 +104,8 @@ prop, so no client component receives the body.
 
 `getPostBySlug` did not filter drafts. Drafts stayed out of production only
 because `dynamicParams = false` meant an unpublished slug was never a valid
-route. Enabling dynamic params for any reason — a legitimate change nobody would
-connect to drafts — would make every draft publicly reachable.
+route. Enabling dynamic params for any reason, a legitimate change nobody would
+connect to drafts, would make every draft publicly reachable.
 
 **Shipped:** an explicit `includeDrafts` option on `getPostBySlug` and
 `getAllPosts`, defaulted from `NODE_ENV`, and `includeDrafts: false` passed
@@ -115,7 +115,7 @@ explicitly in `generateStaticParams`.
 ### 8. Locale list declared five times
 
 `["en", "pl", "de"]` appeared in the loader (twice), both blog route files, and
-the path helper — while a `LOCALES` config module existed and was used only by
+the path helper, while a `LOCALES` config module existed and was used only by
 the sitemap. Adding a locale meant finding four other copies.
 
 **Shipped:** one `locales.ts` with `LOCALES`, `DEFAULT_LOCALE` and an `isLocale`
@@ -124,7 +124,7 @@ type guard, imported everywhere. [content-loader.md](content-loader.md)
 ### 9. Untranslatable strings on the tag page
 
 The tag page carried an inline `{ en, pl, de }` map with an English `||`
-fallback — so a fourth locale would serve English with no missing-key signal —
+fallback, so a fourth locale would serve English with no missing-key signal,
 and its meta description hardcoded English marketing copy into every locale's tag
 pages. Pluralization used `article${n !== 1 ? "s" : ""}`, an English rule in code.
 
@@ -137,8 +137,8 @@ plural keys. [i18n-and-routing.md](i18n-and-routing.md)
 `timeZone: "UTC"` and the card did not, so the same date could render one day
 apart on the index and the article.
 
-**Shipped:** a `Record<Locale, string>` of BCP-47 tags — adding a locale is a
-type error, not a silent fallback — with `timeZone: "UTC"` everywhere.
+**Shipped:** a `Record<Locale, string>` of BCP-47 tags, so adding a locale is a
+type error rather than a silent fallback, with `timeZone: "UTC"` everywhere.
 [pages-and-seo.md](pages-and-seo.md)
 
 ### 11. `getPostBySlug` threw, and callers swallowed it
@@ -195,8 +195,8 @@ Additions, designed in the skill and never run in the earlier implementation:
   three translations look like three articles about the same thing.
 - **The content validation script.** [operations.md](operations.md)
 - **`getIndexableTags(locale, minPosts)`,** defaulted to 1 so behaviour is
-  unchanged. The earlier implementation generated a page for every tag, about
-  two tags per post, so many pages held a single card. The threshold is
+  unchanged. The earlier implementation generated a page for every tag, and
+  with a few tags on each post many pages held a single card. The threshold is
   offered, not imposed. [tags.md](tags.md)
 - **`variants` on `TagSummary`** as a spelling-drift signal.
 - **`usedFallbackParser` on `Post`,** so a weak parse is visible.
@@ -223,17 +223,17 @@ Additions, designed in the skill and never run in the earlier implementation:
 
 Fix order, most damaging first:
 
-1. **`matter(contents, {})`** (#1) — one live post is currently rendering with no
+1. **`matter(contents, {})`** (#1): one live post is currently rendering with no
    title, no tags and a broken hreflang cluster. One argument.
-2. **Related-posts fallback** (#2) — user-visible on two thirds of translated
-   posts, right now.
-3. **`.md` filter** (#4) — one character away from a failed build on any macOS
+2. **Related-posts fallback** (#2): user-visible on most translated posts,
+   right now.
+3. **`.md` filter** (#4): one character away from a failed build on any macOS
    checkout.
-4. **Memoization** (#3) — build time, and it gets worse as content grows.
-5. **Draft guard** (#7) — latent, but the failure mode is publishing something
+4. **Memoization** (#3): build time, and it gets worse as content grows.
+5. **Draft guard** (#7): latent, but the failure mode is publishing something
    unpublished.
-6. **Tag grouping by slug** (#5) — latent today; triggered by one inconsistent
+6. **Tag grouping by slug** (#5): latent today; triggered by one inconsistent
    tag spelling.
-7. **Reading time** (#6) — small, visible, trivially fixed.
-8. **Locale config, tag-page strings, date formatting** (#8, #9, #10) — quality
+7. **Reading time** (#6): small, visible, trivially fixed.
+8. **Locale config, tag-page strings, date formatting** (#8, #9, #10): quality
    and maintenance; do them together.

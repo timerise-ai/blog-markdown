@@ -5,7 +5,7 @@ most of it before a build does.
 
 ## The content validator
 
-Content defects in this module are **silent by design** — a bad `related` slug is
+Content defects in this module are **silent by design**: a bad `related` slug is
 dropped, a missing `translationKey` degrades to the slug, a YAML failure falls
 back to a weaker parser. That is correct at runtime (one bad file must not take
 the site down) and useless to an author. The validator is where those become
@@ -49,10 +49,10 @@ for (const locale of LOCALES) {
         data = matter(source).data;
       } catch (error) {
         // The app falls back to a line parser here, which cannot read values
-        // spanning multiple lines — a wrapped `related:` array becomes undefined.
+        // spanning multiple lines, so a wrapped `related:` array becomes undefined.
         warnings.push(
           `${locale}/${file}: YAML failed, app will use the fallback parser ` +
-            `(multi-line values will be lost) — ${error.message.split("\n")[0]}`,
+            `(multi-line values will be lost): ${error.message.split("\n")[0]}`,
         );
         data = {};
       }
@@ -94,7 +94,7 @@ for (const locale of LOCALES)
 for (const [key, locales] of Object.entries(keys)) {
   if (locales.length < LOCALES.length) {
     warnings.push(
-      `translationKey "${key}": only ${locales.join(", ")} — missing ` +
+      `translationKey "${key}": only ${locales.join(", ")}, missing ` +
         LOCALES.filter((l) => !locales.includes(l)).join(", "),
     );
   }
@@ -165,7 +165,7 @@ each is a documented extension, not shipped code.
 | No publish date in the future | A post is live the moment it merges | Filter `post.date > now` in production; schedule a rebuild |
 | No content dashboard | Coverage gaps are invisible until someone notices | The validator's warnings, printed in CI's summary |
 | No "where is this linked from" | Renaming a slug silently breaks every `related` pointing at it | Reverse index over `related` in the validator |
-| No word/reading-time targets | Length drifts | `readingMinutes` is already computed — surface it in the validator |
+| No word/reading-time targets | Length drifts | `readingMinutes` is already computed; surface it in the validator |
 | No redirect map | Renaming a published slug 404s an indexed URL | A `redirects` entry per rename; make it part of the rename ritual |
 
 The last one is worth a rule: **a published slug is an API.** Renaming it is a
@@ -177,12 +177,12 @@ enforces that.
 1. Copy the newest post in the default locale as a template.
 2. Change `translationKey`, `slug`, `title`, `date`, `excerpt`; rename the file to
    match the slug.
-3. Reuse tag spellings — run the validator and check the drift warnings.
+3. Reuse tag spellings: run the validator and check the drift warnings.
 4. Add `related` (default-locale slugs). Translations may omit it.
 5. Add the same `translationKey` to each translation.
 6. `npm run validate:content`, then build and open the post in every locale.
 
-## Failure modes seen in production
+## Failure modes and fixes
 
 | Symptom | Cause | Fix |
 |---|---|---|

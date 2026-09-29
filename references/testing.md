@@ -1,11 +1,11 @@
 # Testing
 
 The content layer is pure over a directory of files, which makes it unusually
-testable — provided the content root is a seam. These tests are the proof of the
+testable, provided the content root is a seam. These tests are the proof of the
 claims this skill makes; they are not illustrative, they all pass.
 
 Runner-agnostic: written for `node --test`, so they need no dependency beyond
-`gray-matter`. Swap `node:test` / `node:assert` for `vitest` if the host has it —
+`gray-matter`. Swap `node:test` / `node:assert` for `vitest` if the host has it:
 the bodies are unchanged.
 
 ```bash
@@ -23,7 +23,7 @@ Seven files, each present to trigger one behaviour. Under `test/fixtures/blog/`.
 | `en/beta.md` | an **unquoted** date; two spellings of one tag |
 | `en/gamma.md` | `draft: true` |
 | `en/.DS_Store` | the non-markdown filter |
-| `pl/alfa.md` | a translation with **no** `related` — the fallback path |
+| `pl/alfa.md` | a translation with **no** `related`, the fallback path |
 | `pl/beta-pl.md` | the target that fallback must resolve to |
 | `pl/cytaty.md` | typographic quotes that break YAML |
 | `de/` (absent) | a missing locale directory |
@@ -43,7 +43,7 @@ one two three four five
 ```
 
 ```yaml
-# en/beta.md — note the unquoted date, and the two tag spellings
+# en/beta.md: note the unquoted date, and the two tag spellings
 ---
 translationKey: "beta"
 title: "Beta"
@@ -70,7 +70,7 @@ body
 ```
 
 ```yaml
-# pl/alfa.md — deliberately has no `related`
+# pl/alfa.md: deliberately has no `related`
 ---
 translationKey: "alpha"
 title: "Alfa"
@@ -95,7 +95,7 @@ body
 ```
 
 `pl/cytaty.md` is the important one. Its excerpt must contain raw typographic
-quotes **inside** a double-quoted scalar — that is what makes YAML fail:
+quotes **inside** a double-quoted scalar; that is what makes YAML fail:
 
 ```yaml
 ---
@@ -290,7 +290,7 @@ test("queries do not mutate the cached posts", () => {
 The two that are worth the whole file:
 
 - **"a translation with no related falls back to the default locale's relations"**
-  is the regression test for the defect that left two thirds of translated posts
+  is the regression test for the defect that left most translated posts
   without a related section.
 - **"a failed YAML parse is not poisoned by gray-matter's cache on re-parse"**
   fails against the obvious implementation. It is the only thing standing between

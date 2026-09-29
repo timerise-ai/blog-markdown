@@ -33,7 +33,8 @@ skills-compatible agent it detects, including Claude Code, Codex CLI and Gemini 
 npx skills add timerise-ai/blog-markdown
 ```
 
-Name the agents instead with `-a`, for example `npx skills add timerise-ai/blog-markdown -a claude-code -a codex`.
+Name the agents instead with `-a`, for example
+`npx skills add timerise-ai/blog-markdown -a claude-code -a codex`.
 
 Or clone it yourself. Nothing here is Claude-specific: the skill is a plain [Agent
 Skills](https://agentskills.io) folder, `SKILL.md` plus markdown references with no file that calls a model,
@@ -82,6 +83,8 @@ the skill stays cheap in context until a topic is actually needed.
 | `references/operations.md` | The content validation script, build cost, authoring workflow |
 | `references/testing.md` | Seven fixtures and the 20-test content-layer suite |
 | `references/provenance.md` | The engineering ledger: what the audit of the earlier implementation changed and how the templates verify it, what was kept, what was added |
+| `evals/` | The prompts an operator types after installing (`prompts.md`) and one file per agent eval: the skill installed into an empty Next.js app, one prompt, no help, then type-checked, built and tested |
+| `.github/workflows/agent-eval.yml` | The caller of the index's reusable eval workflow: runs prompt 1 in Claude Code, Codex CLI and Gemini CLI on every published release and commits each result to `evals/` |
 
 ## The four non-negotiables
 
@@ -126,6 +129,7 @@ the templates are there for reasons `references/provenance.md` records, and that
 read it before simplifying anything, and add an entry for anything you change. Commits follow Conventional
 Commits and releases follow [STANDARD.md](https://github.com/timerise-ai/skills/blob/main/STANDARD.md) in the
 index; `CLAUDE.md` carries the full editing conventions.
+
 ## Part of the Timerise Skills
 
 This is one of the [Timerise Skills](https://github.com/timerise-ai/skills): modules for **Next.js App
