@@ -43,13 +43,13 @@ for (const locale of LOCALES) {
   }
 
   byLocale[locale] = fs
-    .readdirSync(dir)
-    .filter((name) => name.endsWith(".md"))
-    .map((file) => {
+    .readdirSync(dir, { withFileTypes: true })
+    .filter((entry) => !entry.isDirectory() && entry.name.endsWith(".md"))
+    .map(({ name: file }) => {
       const source = fs.readFileSync(path.join(dir, file), "utf8");
       let data;
       try {
-        data = matter(source).data;
+        data = matter(source, {}).data; // `{}` opts out of the poisoned cache
       } catch (error) {
         // The app falls back to a line parser here, which cannot read values
         // spanning multiple lines, so a wrapped `related:` array becomes undefined.
@@ -190,6 +190,7 @@ enforces that.
 | Symptom | Cause | Fix |
 |---|---|---|
 | Build fails with `ENOENT ... .DS_Store.md` | `getPostSlugs` did not filter `.md` | `.filter(name => name.endsWith(".md"))` |
+| Build or validator fails with `EISDIR` | A directory whose name ends in `.md` | Skip directories: `!entry.isDirectory()` |
 | Build fails with `YAMLException: end of the stream` | Typographic quotes inside a double-quoted scalar | The fallback parser; then fix the file |
 | A translated post's `related` is silently `undefined` | That file is on the fallback parser and its array is wrapped across lines | Put the array on one line, or fix the quoting |
 | "Further reading" empty in translations only | `related` authored only in the default locale, with no fallback | The `translationKey` fallback in `getRelatedPosts` |

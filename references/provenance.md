@@ -193,7 +193,11 @@ Additions, designed in the skill and never run in the earlier implementation:
   implementation had no feed. [pages-and-seo.md](pages-and-seo.md)
 - **`inLanguage` and `mainEntityOfPage` in the JSON-LD.** Without `inLanguage`,
   three translations look like three articles about the same thing.
-- **The content validation script.** [operations.md](operations.md)
+- **The content validation script.** Until 0.1.10 it called `matter(source)`
+  without the `{}` the loader passes, so a second file with the same broken YAML
+  lost its warning, and it failed with `EISDIR` on a `.md` directory. Both found
+  by the agent eval of 0.1.9, where Codex patched the copy it made.
+  [operations.md](operations.md)
 - **`getIndexableTags(locale, minPosts)`,** defaulted to 1 so behaviour is
   unchanged. The earlier implementation generated a page for every tag, and
   with a few tags on each post many pages held a single card. The threshold is
