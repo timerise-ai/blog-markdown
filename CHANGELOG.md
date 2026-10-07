@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.10] - 2026-10-07
+
+Fix release, from scoring the prompt-1 agent eval runs against 0.1.9.
+
+### Fixed
+
+- The content validator calls `matter(source, {})`. Without the options object,
+  gray-matter's cache returned an empty result for a second file with the same
+  broken YAML, so that file lost its "YAML failed" warning and showed only
+  "missing" errors.
+- The validator skips directories, as the loader does since 0.1.9; a directory
+  whose name ends in `.md` crashed it with `EISDIR`. Apps that copied
+  `scripts/validate-content.mjs` from an earlier version need both changes.
+
+### Changed
+
+- The failure-modes table in `references/operations.md` names `EISDIR`.
+
 ## [0.1.9] - 2026-10-07
 
 Fix release, from scoring the prompt-1 agent eval runs against 0.1.8.
