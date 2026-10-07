@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.8] - 2026-10-07
+
+Fix release, from scoring the prompt-1 agent eval runs against 0.1.7.
+
+### Fixed
+
+- The shipped test suite can now run as documented. Its imports pointed at
+  `./lib/blog/...` from inside `lib/blog/`, and the `lib/blog` templates imported
+  each other without extensions, which `node --experimental-strip-types` cannot
+  resolve. Relative imports between `lib/blog` modules now carry `.ts`, the test
+  block names `lib/blog/blog.test.ts` as its destination, and
+  `references/testing.md` says to set `allowImportingTsExtensions`. Apps built
+  from earlier versions that run the suite under plain Node need the same
+  import change.
+
+### Changed
+
+- The quick start in `SKILL.md` says to install `gray-matter` from the registry,
+  which is not an external service, and to copy the suite verbatim and expect 20.
+- `SKILL.md` and `references/pages-and-seo.md` say to tell the operator that
+  `SITE_URL` is a placeholder to set to the production domain.
+- `references/provenance.md` records the suite defect under its *Added* entry;
+  `CLAUDE.md` states the `.ts` import convention.
+
 ## [0.1.7] - 2026-09-29
 
 Wording release. Templates and technical content are unchanged from 0.1.6, apart
