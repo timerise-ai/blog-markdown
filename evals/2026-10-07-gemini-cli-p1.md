@@ -23,3 +23,10 @@ isolated: true
 timedOut: false
 runUrl: https://github.com/timerise-ai/blog-markdown/actions/runs/37676521658
 ---
+
+Rubric 8/8, scored from the summary. The loader is the skill's (`matter(fileContents, {})`, per-locale
+production cache, `.md` filter, explicit draft filter, `translationKey` fallback), the seven fixtures and
+the 20 tests are verbatim under `node --experimental-strip-types --test`, tags group by slug, and the
+handover tells the operator to set `SITE_URL` before deploying. It configured `en`, `pl` and `de` "based
+on skill contracts and test suite expectations" for a prompt that asked for no languages; not a rubric
+item, but the suite should not drive the app's locale set, and 0.1.9 says so.
