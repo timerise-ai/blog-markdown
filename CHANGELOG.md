@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.9] - 2026-10-07
+
+Fix release, from scoring the prompt-1 agent eval runs against 0.1.8.
+
+### Fixed
+
+- `getPostSlugs` skips directories. A directory whose name ends in `.md` passed
+  the name filter and failed the build with `EISDIR`. The filter checks
+  `!isDirectory()`, so a symlinked post still loads, and the `.md` filter test
+  creates such a directory; the test count stays 20. Apps built from earlier
+  versions need the same three lines in `lib/blog/posts.ts`.
+
+### Changed
+
+- Continuation blocks name the file they extend, `// lib/blog/tags.ts (continued)`,
+  so a scripted extraction no longer drops `getRelatedPosts`, `getIndexableTags`
+  or `resolveLocalizedSlug`; `CLAUDE.md` states the convention.
+- The quick start and `references/operations.md` say to copy the validator as
+  `.mjs` and keep its `LOCALES` and `slugify` in step with the app's.
+- `references/testing.md` says the suite passes against an English-only app,
+  never to add a locale for its sake, and to exclude the test file from the
+  type-check when the host's `Locale` has no `"pl"`.
+
 ## [0.1.8] - 2026-10-07
 
 Fix release, from scoring the prompt-1 agent eval runs against 0.1.7.
