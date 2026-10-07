@@ -23,3 +23,9 @@ isolated: true
 timedOut: false
 runUrl: https://github.com/timerise-ai/blog-markdown/actions/runs/37682218573
 ---
+
+Rubric 8/8, scored from the summary. The suite runs 20 of 20 under Node's runner with the test file kept
+out of the type-check of an English-only app, the loader skips stray files, the validator shares the
+punctuation-stripping slug rule it chose (the documented extension in `references/tags.md`), plain CSS
+replaces the placeholder utility classes (a documented seam), and the handover says to set `SITE_URL`
+before deploying.
