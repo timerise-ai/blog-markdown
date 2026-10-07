@@ -23,3 +23,9 @@ isolated: true
 timedOut: false
 runUrl: https://github.com/timerise-ai/blog-markdown/actions/runs/37679729919
 ---
+
+Rubric 8/8, scored from the summary. The suite and the fixtures were copied verbatim and report 20 under
+Node's runner, `allowImportingTsExtensions` is on, the English-only app keeps the test file out of the
+type-check exactly as `references/testing.md` now says, and the handover names `SITE_URL` and what it
+feeds. Revalidation of an hour on index and tag pages and a day on posts is the table in
+`references/pages-and-seo.md`.
