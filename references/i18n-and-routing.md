@@ -21,7 +21,7 @@ and nothing else.
 
 ```ts
 // lib/blog/paths.ts
-import { DEFAULT_LOCALE, type Locale } from "./locales";
+import { DEFAULT_LOCALE, type Locale } from "./locales.ts";
 
 /** Seam: if the host has its own path helper (localized route slugs, aliases),
  *  delegate to it here rather than duplicating the rule. */
@@ -49,9 +49,9 @@ a locale prefix goes missing on one card in one component.
 
 ```ts
 // lib/blog/alternates.ts
-import { blogIndexPath, postPath } from "./paths";
-import { LOCALES, type Locale } from "./locales";
-import { getAllPosts } from "./posts";
+import { blogIndexPath, postPath } from "./paths.ts";
+import { LOCALES, type Locale } from "./locales.ts";
+import { getAllPosts } from "./posts.ts";
 
 /** Locale -> slug for every locale that has this article. */
 export function getAlternateSlugs(translationKey: string): Partial<Record<Locale, string>> {

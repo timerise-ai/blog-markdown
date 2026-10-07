@@ -115,17 +115,19 @@ content/blog/<locale>/<localized-slug>.md   # frontmatter + body
 
 1. Set the locale contract and the frontmatter schema:
    [content-model.md](references/content-model.md)
-2. Build the loader (memoized, `.md`-filtered, fallback parser):
+2. `npm i gray-matter` (the package registry is not an external service), then
+   build the loader on it, memoized, `.md`-filtered, with the fallback parser:
    [content-loader.md](references/content-loader.md)
 3. Wire locales, alternates and cross-locale redirects:
    [i18n-and-routing.md](references/i18n-and-routing.md)
 4. Add tag grouping and tag pages: [tags.md](references/tags.md)
-5. Build the three routes, metadata and JSON-LD:
-   [pages-and-seo.md](references/pages-and-seo.md)
+5. Build the three routes, metadata and JSON-LD; tell the operator `SITE_URL` is
+   a placeholder to set: [pages-and-seo.md](references/pages-and-seo.md)
 6. Render bodies and covers: [rendering.md](references/rendering.md)
 7. Add the validation script and read the operator gaps:
    [operations.md](references/operations.md)
-8. Run the fixtures and tests: [testing.md](references/testing.md)
+8. Copy the fixtures and tests verbatim, wire `npm test`, expect 20:
+   [testing.md](references/testing.md)
 
 Porting this into an existing app? Fill in the seam table in
 [adaptation.md](references/adaptation.md) first; it takes ten minutes and saves

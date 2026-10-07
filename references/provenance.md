@@ -204,7 +204,11 @@ Additions, designed in the skill and never run in the earlier implementation:
 - **A testability seam** (`BLOG_CONTENT_DIR`) and `clearPostCache()`. Nothing in
   the earlier implementation could be tested without a real content tree.
 - **A 20-test suite** covering every claim above, plus fixtures that reproduce
-  the YAML failure. [testing.md](testing.md)
+  the YAML failure. Before 0.1.8 it could not run as documented: the
+  test imported `./lib/blog/...` from inside `lib/blog/`, and the templates'
+  extensionless imports do not resolve under Node's type stripping. Found by the
+  agent eval of 0.1.7, where every agent patched one or the other to get a pass;
+  the templates now import with `.ts`. [testing.md](testing.md)
 - **The XSS trust boundary, written down.** The earlier implementation was safe,
   with no `rehype-raw`, but nothing said so, and the next person adding an embed
   would have removed the boundary without knowing it existed.

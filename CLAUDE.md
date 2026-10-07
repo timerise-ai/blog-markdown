@@ -47,7 +47,8 @@ was added and what was left behind. That file is the rationale layer: read it be
   `// app/[lang]/blog/[slug]/page.tsx`, `// scripts/validate-content.mjs`. Continuation blocks that extend a
   file already introduced omit it. Templates are written to compile under `strict` and
   `noUncheckedIndexedAccess`; keep imports complete and types explicit enough to hold that claim, which
-  `provenance.md` makes in the reader's name.
+  `provenance.md` makes in the reader's name. Relative imports between `lib/blog` modules carry the `.ts`
+  extension, so the suite runs under `node --experimental-strip-types` as `testing.md` documents.
 - **Identifiers are shared across files.** `getAllPosts`, `getPostBySlug`, `getRelatedPosts`,
   `parseFrontmatter`, `LOCALES`, `DEFAULT_LOCALE`, `localizedPath` / `postPath` / `tagPath`, `getTagSlug`,
   `getIndexableTags`, `TagSummary`, `BLOG_CONTENT_DIR`, `clearPostCache`, `usedFallbackParser` and the

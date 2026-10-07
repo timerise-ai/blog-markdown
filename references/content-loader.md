@@ -211,8 +211,8 @@ who adds a second call site should not resurrect it.
 import fs from "fs";
 import path from "path";
 
-import { parseFrontmatter } from "./frontmatter";
-import { DEFAULT_LOCALE, LOCALES, type Locale } from "./locales";
+import { parseFrontmatter } from "./frontmatter.ts";
+import { DEFAULT_LOCALE, LOCALES, type Locale } from "./locales.ts";
 
 // Overridable so the loader can be pointed at a fixture directory in tests.
 // Without this seam nothing below is testable without a real content tree.

@@ -64,9 +64,9 @@ The fix is to make **the slug the identity** and treat the label as display text
 
 ```ts
 // lib/blog/tags.ts
-import { DEFAULT_LOCALE, type Locale } from "./locales";
-import { getAllPosts, type Post } from "./posts";
-import { getTagSlug } from "./tag-slug";
+import { DEFAULT_LOCALE, type Locale } from "./locales.ts";
+import { getAllPosts, type Post } from "./posts.ts";
+import { getTagSlug } from "./tag-slug.ts";
 
 export type TagSummary = {
   /** URL identity. Unique within a locale. */

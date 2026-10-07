@@ -4,14 +4,26 @@ The content layer is pure over a directory of files, which makes it unusually
 testable, provided the content root is a seam. These tests are the proof of the
 claims this skill makes; they are not illustrative, they all pass.
 
-Runner-agnostic: written for `node --test`, so they need no dependency beyond
-`gray-matter`. Swap `node:test` / `node:assert` for `vitest` if the host has it:
-the bodies are unchanged.
+Written for `node --test`, so they need no dependency beyond `gray-matter`,
+which is installed from the package registry like any other dependency; the
+registry is not an external service. Swap `node:test` / `node:assert` for
+`vitest` if the host already has it: the bodies are unchanged.
+
+The file lives at `lib/blog/blog.test.ts`, beside the modules it imports. Node's
+type stripping resolves no extensionless path, so the `lib/blog` templates
+import each other with explicit `.ts` extensions; set
+`"allowImportingTsExtensions": true` in the host's `tsconfig.json` (Next.js
+already sets the `noEmit` it requires). Wire this command to `npm test` as
+written:
 
 ```bash
 BLOG_CONTENT_DIR=./test/fixtures/blog node --experimental-strip-types \
   --test lib/blog/blog.test.ts
 ```
+
+Copy the file and the fixtures verbatim and expect 20 passing tests. Rewriting
+the imports, converting the runner or appending tests to this file breaks the
+count the skill states; a test of your own goes in a file of its own.
 
 ## Fixtures
 
@@ -115,17 +127,18 @@ Assert on `usedFallback === true` so a silently-fixed fixture fails loudly.
 ## The tests
 
 ```ts
+// lib/blog/blog.test.ts
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import fs from "fs";
 import path from "path";
 
-import { parseFrontmatter } from "./lib/blog/frontmatter.ts";
+import { parseFrontmatter } from "./frontmatter.ts";
 import {
   getAllPosts, getPostBySlug, getPostSlugs, getRelatedPosts, readingTimeMinutes,
-} from "./lib/blog/posts.ts";
-import { getTags, getPostsByTagSlug, getTagBySlug } from "./lib/blog/tags.ts";
-import { getTagSlug } from "./lib/blog/tag-slug.ts";
+} from "./posts.ts";
+import { getTags, getPostsByTagSlug, getTagBySlug } from "./tags.ts";
+import { getTagSlug } from "./tag-slug.ts";
 
 const post = (slug: string, locale: "en" | "pl") => {
   const p = getPostBySlug(slug, locale, { includeDrafts: true });

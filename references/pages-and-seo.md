@@ -174,7 +174,11 @@ omitted both. Both matter for a multilingual site: without `inLanguage`, three
 translations look like three articles about the same thing.
 
 `SITE_URL` is a seam: one exported constant, used by JSON-LD, the sitemap and the
-feed. Never inline the domain.
+feed. Never inline the domain. It ships as the placeholder `https://example.com`;
+reading it from an environment variable with that fallback is fine, as long as
+the build does not require it. Either way, tell the operator to set it to the
+production domain before deploying: every absolute URL in the feed, the sitemap
+and the JSON-LD is built from it.
 
 ## The tag route
 
