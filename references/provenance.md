@@ -209,6 +209,10 @@ Additions, designed in the skill and never run in the earlier implementation:
   extensionless imports do not resolve under Node's type stripping. Found by the
   agent eval of 0.1.7, where every agent patched one or the other to get a pass;
   the templates now import with `.ts`. [testing.md](testing.md)
+- **Directories skipped by `getPostSlugs`.** A directory named `*.md` passed the
+  name filter of entry 4 and failed the build with `EISDIR`. Found by the agent
+  eval of 0.1.8, where Codex patched the loader to skip it; held by the `.md`
+  filter test, which now creates such a directory. [content-loader.md](content-loader.md)
 - **The XSS trust boundary, written down.** The earlier implementation was safe,
   with no `rehype-raw`, but nothing said so, and the next person adding an embed
   would have removed the boundary without knowing it existed.

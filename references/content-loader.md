@@ -259,9 +259,9 @@ export function getPostSlugs(locale: Locale): string[] {
   const localeDirectory = path.join(postsDirectory, locale);
   if (!fs.existsSync(localeDirectory)) return [];
   return fs
-    .readdirSync(localeDirectory)
-    .filter((name) => name.endsWith(".md"))
-    .map((name) => name.slice(0, -3));
+    .readdirSync(localeDirectory, { withFileTypes: true })
+    .filter((entry) => !entry.isDirectory() && entry.name.endsWith(".md"))
+    .map((entry) => entry.name.slice(0, -3));
 }
 
 function loadPost(slug: string, locale: Locale): Post {
@@ -359,11 +359,15 @@ The earlier implementation's `getPostSlugs` returned `fs.readdirSync(dir)` unfil
 checkout where Finder has opened the folder, that is `readFileSync(".DS_Store.md")`,
 an `ENOENT`, and **the whole build fails**, with an error naming a file the author
 never created. One `.filter()` prevents it. The same applies to `.mdx`, editor
-swap files, and `README.md` if you keep notes beside the content.
+swap files, and `README.md` if you keep notes beside the content. A directory
+whose name ends in `.md` passes a name-only filter and fails the build with
+`EISDIR`, so the filter also skips directories. It checks `!isDirectory()`
+rather than `isFile()`, which would drop a post that is a symlink.
 
 ## Related posts, with the cross-locale fallback
 
 ```ts
+// lib/blog/posts.ts (continued)
 /**
  * Relations are authored once, on the default-locale post, as default-locale
  * slugs. A translated file may omit `related` and still resolve correctly.

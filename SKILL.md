@@ -124,7 +124,7 @@ content/blog/<locale>/<localized-slug>.md   # frontmatter + body
 5. Build the three routes, metadata and JSON-LD; tell the operator `SITE_URL` is
    a placeholder to set: [pages-and-seo.md](references/pages-and-seo.md)
 6. Render bodies and covers: [rendering.md](references/rendering.md)
-7. Add the validation script and read the operator gaps:
+7. Copy the validation script as `.mjs` and read the operator gaps:
    [operations.md](references/operations.md)
 8. Copy the fixtures and tests verbatim, wire `npm test`, expect 20:
    [testing.md](references/testing.md)

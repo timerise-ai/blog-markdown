@@ -95,6 +95,7 @@ German file is `agent-experience-optimierung.md`. Naively that is a 404 on a lin
 that was correct when it was posted.
 
 ```ts
+// lib/blog/alternates.ts (continued)
 /**
  * Given a slug that may belong to another locale, find the equivalent slug in
  * the target locale. Returns null when the slug is unknown everywhere, or when

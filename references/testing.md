@@ -25,6 +25,12 @@ Copy the file and the fixtures verbatim and expect 20 passing tests. Rewriting
 the imports, converting the runner or appending tests to this file breaks the
 count the skill states; a test of your own goes in a file of its own.
 
+The fixtures are `en` and `pl` whatever locales the host serves, and the loader
+reads any directory it is given, so the suite passes against an English-only
+app. Never add a locale to the app for the suite's sake. If the host's `Locale`
+type has no `"pl"`, exclude `lib/blog/blog.test.ts` from the type-check in
+`tsconfig.json`; `npm test` still runs it.
+
 ## Fixtures
 
 Seven files, each present to trigger one behaviour. Under `test/fixtures/blog/`.
@@ -135,7 +141,8 @@ import path from "path";
 
 import { parseFrontmatter } from "./frontmatter.ts";
 import {
-  getAllPosts, getPostBySlug, getPostSlugs, getRelatedPosts, readingTimeMinutes,
+  clearPostCache, getAllPosts, getPostBySlug, getPostSlugs, getRelatedPosts,
+  readingTimeMinutes,
 } from "./posts.ts";
 import { getTags, getPostsByTagSlug, getTagBySlug } from "./tags.ts";
 import { getTagSlug } from "./tag-slug.ts";
@@ -148,10 +155,19 @@ const post = (slug: string, locale: "en" | "pl") => {
 
 // --- loader -----------------------------------------------------------------
 
-test("getPostSlugs ignores non-markdown entries (.DS_Store must not crash)", () => {
-  assert.ok(fs.existsSync(path.join(process.env.BLOG_CONTENT_DIR!, "en/.DS_Store")));
-  assert.deepEqual(getPostSlugs("en").sort(), ["alpha", "beta", "gamma"]);
-  assert.doesNotThrow(() => getAllPosts("en", { includeDrafts: true }));
+test("getPostSlugs ignores non-markdown entries (.DS_Store, a .md directory)", () => {
+  const dir = path.join(process.env.BLOG_CONTENT_DIR!, "en");
+  assert.ok(fs.existsSync(path.join(dir, ".DS_Store")));
+  const folder = path.join(dir, "notes.md");
+  fs.mkdirSync(folder, { recursive: true });
+  try {
+    clearPostCache();
+    assert.deepEqual(getPostSlugs("en").sort(), ["alpha", "beta", "gamma"]);
+    assert.doesNotThrow(() => getAllPosts("en", { includeDrafts: true }));
+  } finally {
+    fs.rmSync(folder, { recursive: true, force: true });
+    clearPostCache();
+  }
 });
 
 test("a missing locale directory yields no posts instead of throwing", () => {

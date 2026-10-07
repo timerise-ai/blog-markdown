@@ -151,6 +151,7 @@ The module ships the threshold, defaulted off, because the right value is an
 editorial decision:
 
 ```ts
+// lib/blog/tags.ts (continued)
 /** Tags eligible for their own page. Below the threshold a tag still renders as
  *  a label on a card, it just gets no page and no sitemap entry. */
 export function getIndexableTags(locale: Locale, minPosts = 1): TagSummary[] {

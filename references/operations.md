@@ -11,7 +11,10 @@ back to a weaker parser. That is correct at runtime (one bad file must not take
 the site down) and useless to an author. The validator is where those become
 visible.
 
-Run it in CI and before publishing. Plain Node, no framework:
+Run it in CI and before publishing. Plain Node, no framework: copy it as
+`scripts/validate-content.mjs`, not as TypeScript, so it runs before any build
+without importing the app's modules. Its `LOCALES` and `slugify` are copies of
+`lib/blog/locales.ts` and `getTagSlug`; change them together.
 
 ```js
 // scripts/validate-content.mjs
